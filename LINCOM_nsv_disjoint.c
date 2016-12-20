@@ -215,24 +215,36 @@ void adjacencyList(FILE *f)
 	//ad=fopen(name,"w+");
     	for(i=1;i<=max_label;i++)
     	{
-		if(degree[i]<min && i!=0)
-		{
-			min=degree[i];
-			min_deg_node=i;
-		}
-		
-        	adlist[i]=(int*)calloc((degree[i]+2),sizeof(int));
-		adlist[i][0]=degree[i];
-		labels[i].label=i;
-		labels[i].category=0;
-		labels[i].traversed=0;
-		labels[i].deg_sum=degree[i];
-		labels[i].intra_edges=0;
+			if(degree[i]<min && i!=0)
+			{
+				min=degree[i];
+				min_deg_node=i;
+			}
+			// printf("Degree = %d\n", degree[i]);
+	        adlist[i]=(int*)calloc((degree[i]+2),sizeof(int));
+			adlist[i][0]=degree[i];
+			labels[i].label=i;
+			labels[i].category=0;
+			labels[i].traversed=0;
+			labels[i].deg_sum=degree[i];
+			labels[i].intra_edges=0;
     	}
+    	printf("\nMaxlabel = %d", max_label);
+    	// printf("\nMin degree = %d", min_deg_node);
+
+    	for (i = 0; i < max_label; i ++)
+    	{
+    		printf("%d: ", adlist[i][0]);
+    		// for (j = 0; j < degree[i]; j ++)
+    		// 	printf("%d ", adlist[i][j]);
+    		printf("\n");
+    	}
+
     	flag=(int*)calloc((max_label+2),sizeof(int));
     	while(fscanf(f,"%d %d",&n1,&n2)!=EOF)
     	{
-		adlist[n1][++flag[n1]]=n2;
+			printf("\nReading (%d, %d)", n1, n2);
+			adlist[n1][++flag[n1]]=n2;
         	adlist[n2][++flag[n2]]=n1;
         	cd++;
     	}

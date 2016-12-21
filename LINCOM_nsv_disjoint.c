@@ -81,16 +81,17 @@ int main( int argc, char **argv)
 {
 	FILE *fp; 
 	float t; 
-	int i; 
-	if(argc != 3)
-	{
-		printf("Wrong command line args"); 
-		exit(0); 
-	}
-	else
-	{
-		strcat(filename, argv[1]); 
-	}
+	// int i; 
+	// if(argc != 3)
+	// {
+	// 	printf("Wrong command line args"); 
+	// 	exit(0); 
+	// }
+	// else
+	// {
+	// 	strcat(filename, argv[1]); 
+	// }
+	char *filename = "karate.txt";
 	fp = fopen(filename, "r"); 
 	if(fp == NULL)
 	{
@@ -106,10 +107,12 @@ int main( int argc, char **argv)
     fp = fopen(filename, "r"); 
 	adjacencyList(fp); 
 	fclose(fp); 
+
 	t = atof(argv[2]); 
 	Queue = (node *)calloc(max_label + 2, sizeof(node)); 
 	Broker = (node *)calloc(max_label + 2, sizeof(node)); 
     Overlap = (link **)calloc(max_label + 2, sizeof(link *)); 
+	
 	node start; 
 	start.label = min_deg_node; 
 	start.score = 0; 
@@ -123,27 +126,25 @@ int main( int argc, char **argv)
 	labels[start.label].category = 1; 
 	community_detection(t); 
 
-	convergence(); 
-	free(labels); 
+	// convergence(); 
+	// free(labels); 
     
-    no_of_comm1 = print(); 
-	
-	generateNodes(); 
-	free(adlist[0]); 
-	for(i = 1; i <= max_label + 1; i++)
-	{
-	    link *temp = Overlap[i]; 
-	    while(temp != NULL)
-	    {
-            link *p = temp; 
-            temp = temp->ptr; 
-            free(p); 
-	    }
+	// generateNodes(); 
+	// free(adlist[0]); 
+	// for(i = 1; i <= max_label + 1; i++)
+	// {
+	//     link *temp = Overlap[i]; 
+	//     while(temp != NULL)
+	//     {
+ //            link *p = temp; 
+ //            temp = temp->ptr; 
+ //            free(p); 
+	//     }
 
-        free(adlist[i]); 
-	}
-	free(Overlap); 
-   	free(adlist); 
+ //        free(adlist[i]); 
+	// }
+	// free(Overlap); 
+ //   	free(adlist); 
 	return 0; 
 }
 
@@ -193,35 +194,37 @@ void adjacencyList(FILE *f)
 			min = degree[i]; 
 			min_deg_node = i; 
 		}
-		  //  printf("Degree = %d\n", degree[i]); 
         adlist[i] = (int*)calloc((degree[i] + 2), sizeof(int)); 
 		adlist[i][0] = degree[i]; 
+		// printf("Adj list [%d][0] = %d\n", i, adlist[i][0]); // working
 		labels[i].label = i; 
 		labels[i].category = 0; 
 		labels[i].traversed = 0; 
 		labels[i].deg_sum = degree[i]; 
 		labels[i].intra_edges = 0; 
 	}
-	printf("\nMaxlabel = %d", max_label); 
-	  //  printf("\nMin degree = %d", min_deg_node); 
-
-	for (i = 0; i < max_label; i ++)
-	{
-		printf("%d: ", adlist[i][0]); 
-		  //  for (j = 0; j < degree[i]; j ++)
-		  //  	printf("%d ", adlist[i][j]); 
-		printf("\n"); 
-	}
-
+	
+	// printf("\nMaxlabel = %d\n", max_label);  // working
+	
+	// printf("\nMin degree = %d", min_deg_node);  // working
+	
+	// for (i = 1; i <= max_label; i ++)
+	// {
+	// 	printf("%d: ", i); 
+	// 	for (j = 0; j <= degree[i]; j ++)
+	// 	   	printf("%d ", adlist[i][j]); 
+	// 	printf("\n"); 
+	// }
+	
 	flag = (int*)calloc((max_label + 2), sizeof(int)); 
+	
 	while(fscanf(f, "%d %d", &n1, &n2) != EOF)
 	{
-		printf("\nReading (%d, %d)", n1, n2); 
 		adlist[n1][++ flag[n1]] = n2; 
     	adlist[n2][++ flag[n2]] = n1; 
     	cd ++; 
 	}
-	  // printf("\n\nThe number of edges:%d\n", cd); 
+	printf("The adjacency list is created :- n = %d, m = %d\n", max_label, cd); 
     free(flag); 
 	free(degree); 
 }
@@ -238,16 +241,21 @@ void community_detection(float t)
 	int b = 0; 
 	int k, no_of_nodes; 
 	int sum = 0, intra = 0, count = 0; 
+	
 	count_of_comm = 0; 
-	node start, neighbour; 
+	node start, neighbour;
+
+	
 	while(front < rear || top >= 0)
 	{
 		if(front < rear)
     	{
+    		printf("\nFrom Queue\n");
        		start = Queue[++front]; 
         }
     	else
     	{
+    		printf("\nFrom Stack\n");
        		start = Broker[top --]; 
        		b++;  // Broker node
 			no_of_nodes = 0; 
@@ -325,7 +333,7 @@ void community_detection(float t)
 	}
 	free(Queue); 
     free(Broker); 
-    	  // printf("\nThe number of brokers are: %d", z); 
+	printf("\nThe number of brokers are: %d", z); 
     	
 	printf("\n\nNo. of COMMUNITIES detected before mod max : %d\n", count_of_comm); 
  

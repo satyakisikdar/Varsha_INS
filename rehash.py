@@ -9,7 +9,7 @@ def rehash(filename):
 	G = nx.read_edgelist(filename, nodetype=int)
 	
 	mapping = {}
-	start = 1
+	start = int(argv[2])
 	
 	for node in G.nodes_iter():
 		if node not in mapping:
@@ -29,8 +29,8 @@ def rehash(filename):
 
 
 def main():
-	if len(argv) < 2:
-		print('Enter filename as command line arg')
+	if len(argv) < 3:
+		print('Enter filename and starting label as command line arg')
 		return 
 
 	filename = argv[1]

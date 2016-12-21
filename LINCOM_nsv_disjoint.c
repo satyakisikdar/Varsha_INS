@@ -81,17 +81,17 @@ int main( int argc, char **argv)
 {
 	FILE *fp; 
 	float t; 
-	// int i; 
-	// if(argc != 3)
-	// {
-	// 	printf("Wrong command line args"); 
-	// 	exit(0); 
-	// }
-	// else
-	// {
-	// 	strcat(filename, argv[1]); 
-	// }
-	char *filename = "karate.txt";
+	int i; 
+	if(argc != 3)
+	{
+		printf("Wrong command line args"); 
+		exit(0); 
+	}
+	else
+	{
+		strcat(filename, argv[1]); 
+	}
+	// char *filename = "karate.txt";
 	fp = fopen(filename, "r"); 
 	if(fp == NULL)
 	{
@@ -108,7 +108,8 @@ int main( int argc, char **argv)
 	adjacencyList(fp); 
 	fclose(fp); 
 
-	t = atof(argv[2]); 
+	t = atof(argv[2]);
+	// t = 0.3;
 	Queue = (node *)calloc(max_label + 2, sizeof(node)); 
 	Broker = (node *)calloc(max_label + 2, sizeof(node)); 
     Overlap = (link **)calloc(max_label + 2, sizeof(link *)); 
@@ -125,26 +126,26 @@ int main( int argc, char **argv)
 	labels[start.label].label = start.label; 
 	labels[start.label].category = 1; 
 	community_detection(t); 
-
-	// convergence(); 
-	// free(labels); 
+	no_of_comm1 = print();
+	convergence(); 
+	free(labels); 
     
-	// generateNodes(); 
-	// free(adlist[0]); 
-	// for(i = 1; i <= max_label + 1; i++)
-	// {
-	//     link *temp = Overlap[i]; 
-	//     while(temp != NULL)
-	//     {
- //            link *p = temp; 
- //            temp = temp->ptr; 
- //            free(p); 
-	//     }
+	generateNodes(); 
+	free(adlist[0]); 
+	for(i = 1; i <= max_label + 1; i++)
+	{
+	    link *temp = Overlap[i]; 
+	    while(temp != NULL)
+	    {
+            link *p = temp; 
+            temp = temp->ptr; 
+            free(p); 
+	    }
 
- //        free(adlist[i]); 
-	// }
-	// free(Overlap); 
- //   	free(adlist); 
+        free(adlist[i]); 
+	}
+	free(Overlap); 
+   	free(adlist); 
 	return 0; 
 }
 
@@ -250,12 +251,12 @@ void community_detection(float t)
 	{
 		if(front < rear)
     	{
-    		printf("\nFrom Queue\n");
+    		// printf("\nFrom Queue\n");
        		start = Queue[++front]; 
         }
     	else
     	{
-    		printf("\nFrom Stack\n");
+    		// printf("\nFrom Stack\n");
        		start = Broker[top --]; 
        		b++;  // Broker node
 			no_of_nodes = 0; 
@@ -609,14 +610,21 @@ void generateNodes()
 							if((temp->label) > (temp1->label))
                    			{
 								if(arrayL[temp->label][temp1->label] == 0)
+								{
+									printf("%d %d\n", temp->label, temp1->label);
 									fprintf(fpl, "%d %d\n", temp->label, temp1->label); 
+								}
                        			arrayL[temp->label][temp1->label]++; 
                    			}
                                         		  // else if((temp->label) < (temp1->label) && arrayL[temp1->label][temp->label] == 0)
 							else if((temp->label) < (temp1->label))
                       		{
 								if(arrayL[temp1->label][temp->label] == 0)
+								{
 									fprintf(fpl, "%d %d\n", temp->label, temp1->label); 
+									printf("%d %d\n", temp->label, temp1->label); 
+	
+								}
                	       			arrayL[temp1->label][temp->label]++; 
                    	 		}
                    		}

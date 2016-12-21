@@ -80,12 +80,9 @@ char filename[50]="";
 
 int main( int argc, char **argv)
 {
-   	clock_t begin,end,total_begin,total_end;
-   	total_begin=clock();
-	char str[MAX];
 	FILE *fp;
 	float t;
-	int temp,i,j;
+	int i;
 	if(argc != 3)
 	{
 		printf("Wrong command line args");
@@ -104,24 +101,18 @@ int main( int argc, char **argv)
 		printf("File does not exist !!");
 		exit(0);
 	}
-	begin=clock();
 	maxLabel(fp);
 	//printf("\n\nThe maximum label of the graph is %d",max_label);
-	end=clock();
 	//printf("\n\nTime taken to calculate Max Label = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	fclose(fp);
 	fp=fopen(filename,"r");
-	begin=clock();
 	degreeOfNodes(fp);
 	//printf("\n\nThe degree of nodes calculated!!");
-	end=clock();
 	//printf("\n\nTime taken to calculate degrees of nodes = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	fclose(fp);
 	labels=(record *)calloc(max_label+2,sizeof(record));
     fp=fopen(filename,"r");
-	begin=clock();
 	adjacencyList(fp);
-	end=clock();
 	//printf("\n\nThe adjacency list calculated!!");
 	//printf("\n\nTime taken to calculate adjacency list = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	fclose(fp);
@@ -145,20 +136,17 @@ int main( int argc, char **argv)
 	labels[start.label].category=1;
 	community_detection(t);
 
-	begin=clock();
 	convergence();
-	end=clock();
 	free(labels);
     	//printf("\n\nTime taken for convergence = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
-	begin=clock();
+	
     no_of_comm1=print();
 	//printf("\ncommunities after print : %d\n",no_of_comm1);
-	end=clock();
+	
 	generateNodes();
 	//printf("\n\nTime taken for print =%f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	//printf("\n\nTime taken for reduction = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
-    total_end=clock();
-        //printf("\n\nTotal time taken for LINCOM = %f\n",(float)(total_end-total_begin)/CLOCKS_PER_SEC);
+    //printf("\n\nTotal time taken for LINCOM = %f\n",(float)(total_end-total_begin)/CLOCKS_PER_SEC);
 	free(adlist[0]);
 	for(i=1;i<=max_label+1;i++)
 	{
@@ -208,7 +196,9 @@ void degreeOfNodes(FILE *f)
 /*Calculates the adjacency list of the graph and minimum degree node present*/
 void adjacencyList(FILE *f)
 {
-	int n1,n2,*flag,i,j,min=degree[1];min_deg_node=1;
+	int n1,n2,*flag,i,min=degree[1];
+	min_deg_node=1;
+    
     adlist=(int**)calloc((max_label+2),sizeof(int*));
 	//char name[50] ="Adjlist_";
 	//strcat(name,filename);
@@ -258,18 +248,16 @@ void adjacencyList(FILE *f)
 
 void community_detection(float t)
 {
-	int i,j,p,rear=-1,front=-1,top=0;
+	int i,rear=-1,front=-1,top=0;
 	brok *bro;
 	link * temp;
 	int z=0;
 	bro=(brok *)calloc(max_label+2,sizeof(brok));
-	int b=0,bLabel;
-	float reScore;
-	int maxi,k,no_of_nodes;
+	int b=0;
+	int k,no_of_nodes;
 	int sum=0,intra=0,count=0;
 	count_of_comm=0;
 	node start,neighbour;
-	clock_t begin=clock(),end;
 	while(front<rear || top>=0)
 	{
 		if(front<rear)
@@ -358,7 +346,7 @@ void community_detection(float t)
     	
 	printf("\n\nNo. of COMMUNITIES detected before mod max : %d\n",count_of_comm);
  
-    end=clock();
+    
 	//printf("\n\nTime taken = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 
     profile=(community1 *)calloc(count_of_comm+1,sizeof(community1));
@@ -405,12 +393,7 @@ float calculate_score(int index)
 
 void convergence()
 {
-	clock_t begin,end;
-	begin=clock();
-   	int iter=5,i,j,no_of_comm,l;
-   	link *temp;
-   	char str[50];
-	end=clock();
+   	int i;
 /* Placing marked nodes in communities to which maximum neighbours belong */
 	int check_loop=1,vertex=0;
 	while(check_loop==1)
@@ -434,12 +417,12 @@ void convergence()
 /*Calculates the maximum label*/
 void maxCMT(int n)
 {
-	int i,j,k=0;
+	int i;
 	float max=0.0,mod_change=0.0;
 	float dc1;
 	int comm,flag_val=0,maxlabel;
-	float mod=0.0,new_mod=0.0,max_m=0.0;
-   	link *temp,*temp1,*temp2;
+	float new_mod=0.0,max_m=0.0;
+   	link *temp;
    	int *flag=(int *)calloc(count_of_comm+1,sizeof(int));
 	int *flag1=(int *)calloc(count_of_comm+1,sizeof(int));
 	for(i=1;i<=adlist[n][0];i++)
@@ -449,9 +432,9 @@ void maxCMT(int n)
 			temp=Overlap[adlist[n][i]];
 			while(temp!=NULL)
 			{
-					flag[temp->label]++;
+				flag[temp->label]++;
 				flag1[temp->label]++;
-					temp=temp->ptr;
+				temp=temp->ptr;
 			}
 			//free(temp);
 		}
@@ -518,9 +501,9 @@ void maxCMT(int n)
 /*Prints the communities*/
 int print()
 {
-    int i,j,l,no_of_comm=0,k,count;
+    int i,j;
     link *temp,*temp1,*temp2;
-	int cVal=1,index=0;
+	int cVal=1;
 	FILE *fp;
 	list1=(int *)calloc(count_of_comm+2,sizeof(int));
 	int *arr=(int *)calloc(count_of_comm+2,sizeof(int));
@@ -534,8 +517,8 @@ int print()
    	{
 		fprintf(fp,"%d",i);
        	temp=Overlap[i];
-		if(temp->test!=0)
-			index=temp->test;
+		// if(temp->test!=0)
+		// 	index=temp->test;
        	while(temp!=NULL)
 		{
 			if(arr[temp->label]==0)
@@ -562,7 +545,7 @@ int print()
 	//char filename3[50],c1,c2;
 	free(arr);
 	int *arr1=(int *)calloc(count_of_comm+2,sizeof(int));
-	char filename3[50]="",c1,c2;
+	char filename3[50]="";
 	//printf("Do you wish to generate intermediate cover? Y/N\n");
 	//c2=getchar();
 	//scanf("%c",&c1);
@@ -611,13 +594,12 @@ int print()
 void generateNodes()
 {
 	link * temp,*temp1;
-	int i,j,k,ct;
-	int total=0;
-	FILE *fpl,*fpl1;
+	int i,j;
+	FILE *fpl;
 	char name[50] ="louvain_input_";
 	strcat(name,filename);
 	fpl=fopen(name,"w+");
-	int index,index1;
+	
     arrayL=(int**)calloc(no_of_comm1+2,sizeof(int*));
     for(i=1;i<=no_of_comm1+1;i++)
     {

@@ -77,10 +77,11 @@ void generateNodes();
 int **arrayL;
 int cd=0;
 char filename[50]="";
+
 int main( int argc, char **argv)
 {
-    	clock_t begin,end,total_begin,total_end;
-    	total_begin=clock();
+   	clock_t begin,end,total_begin,total_end;
+   	total_begin=clock();
 	char str[MAX];
 	FILE *fp;
 	float t;
@@ -130,49 +131,49 @@ int main( int argc, char **argv)
 t = atof(argv[2]);
 	Queue=(node *)calloc(max_label+2,sizeof(node));
 	Broker=(node *)calloc(max_label+2,sizeof(node));
-    	Overlap=(link**)calloc(max_label+2,sizeof(link*));
+    Overlap=(link**)calloc(max_label+2,sizeof(link*));
 	node start;
-    	start.label=min_deg_node;
-    	start.score=0;
-    	start.parent=start.label;
-    	start.community=min_deg_node;
-    	start.category=1;//broker
-    	labels[start.label].influenced=1;
+	start.label=min_deg_node;
+	start.score=0;
+	start.parent=start.label;
+	start.community=min_deg_node;
+	start.category=1;//broker
+	labels[start.label].influenced=1;
 
-    	Broker[0]=start;
-    	labels[start.label].label=start.label;
-    	labels[start.label].category=1;
-    	community_detection(t);
+	Broker[0]=start;
+	labels[start.label].label=start.label;
+	labels[start.label].category=1;
+	community_detection(t);
 
-    	begin=clock();
-    	convergence();
-    	end=clock();
+	begin=clock();
+	convergence();
+	end=clock();
 	free(labels);
     	//printf("\n\nTime taken for convergence = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	begin=clock();
     	no_of_comm1=print();
 	//printf("\ncommunities after print : %d\n",no_of_comm1);
 	end=clock();
-generateNodes();
+	generateNodes();
 	//printf("\n\nTime taken for print =%f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	//printf("\n\nTime taken for reduction = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
-    	total_end=clock();
+    total_end=clock();
         //printf("\n\nTotal time taken for LINCOM = %f\n",(float)(total_end-total_begin)/CLOCKS_PER_SEC);
 	free(adlist[0]);
-    	for(i=1;i<=max_label+1;i++)
-    	{
-    	    link *temp=Overlap[i];
-    	    while(temp!=NULL)
-    	    {
-                link *p=temp;
-                temp=temp->ptr;
-                free(p);
-    	    }
+	for(i=1;i<=max_label+1;i++)
+	{
+	    link *temp=Overlap[i];
+	    while(temp!=NULL)
+	    {
+            link *p=temp;
+            temp=temp->ptr;
+            free(p);
+	    }
 
-            free(adlist[i]);
-    	}
+        free(adlist[i]);
+	}
 	free(Overlap);
-    	free(adlist);
+   	free(adlist);
 	return 0;
 }
 
@@ -182,13 +183,13 @@ void maxLabel(FILE *f)
 {
 	max_label=0;
 	int i,j;
-    	while(fscanf(f,"%d %d",&i,&j)!=EOF)
-    	{
-        	if(i>max_label && i>j)
-        	     max_label= i;
-        	else if(j>max_label && j>i)
+	while(fscanf(f,"%d %d",&i,&j)!=EOF)
+	{
+    	if(i>max_label && i>j)
+ 		   max_label= i;
+    	else if(j>max_label && j>i)
 			max_label= j;
-    	}
+	}
 }
 
 /*Calculates the degree of the nodes present in the graph*/
@@ -208,62 +209,48 @@ void degreeOfNodes(FILE *f)
 void adjacencyList(FILE *f)
 {
 	int n1,n2,*flag,i,j,min=degree[1];min_deg_node=1;
-    	adlist=(int**)calloc((max_label+2),sizeof(int*));
+    adlist=(int**)calloc((max_label+2),sizeof(int*));
 	//char name[50] ="Adjlist_";
 	//strcat(name,filename);
 	//FILE *ad;
 	//ad=fopen(name,"w+");
-    	for(i=1;i<=max_label;i++)
-    	{
-			if(degree[i]<min && i!=0)
-			{
-				min=degree[i];
-				min_deg_node=i;
-			}
-			// printf("Degree = %d\n", degree[i]);
-	        adlist[i]=(int*)calloc((degree[i]+2),sizeof(int));
-			adlist[i][0]=degree[i];
-			labels[i].label=i;
-			labels[i].category=0;
-			labels[i].traversed=0;
-			labels[i].deg_sum=degree[i];
-			labels[i].intra_edges=0;
-    	}
-    	printf("\nMaxlabel = %d", max_label);
-    	// printf("\nMin degree = %d", min_deg_node);
-
-    	for (i = 0; i < max_label; i ++)
-    	{
-    		printf("%d: ", adlist[i][0]);
-    		// for (j = 0; j < degree[i]; j ++)
-    		// 	printf("%d ", adlist[i][j]);
-    		printf("\n");
-    	}
-
-    	flag=(int*)calloc((max_label+2),sizeof(int));
-    	while(fscanf(f,"%d %d",&n1,&n2)!=EOF)
-    	{
-			printf("\nReading (%d, %d)", n1, n2);
-			adlist[n1][++flag[n1]]=n2;
-        	adlist[n2][++flag[n2]]=n1;
-        	cd++;
-    	}
-/*fprintf(ad,"%d %d\n",max_label,cd);
-
-for(i=1;i<=max_label;i++)
-{
-	fprintf(ad,"%d %d ",i,degree[i]);
-	for(j=1;j<=degree[i];j++)
+	for(i=1;i<=max_label;i++)
 	{
-		fprintf(ad,"%d ",adlist[i][j]);
+		if(degree[i]<min && i!=0)
+		{
+			min=degree[i];
+			min_deg_node=i;
+		}
+		// printf("Degree = %d\n", degree[i]);
+        adlist[i]=(int*)calloc((degree[i]+2),sizeof(int));
+		adlist[i][0]=degree[i];
+		labels[i].label=i;
+		labels[i].category=0;
+		labels[i].traversed=0;
+		labels[i].deg_sum=degree[i];
+		labels[i].intra_edges=0;
 	}
-	fprintf(ad,"\n");
-}
+	printf("\nMaxlabel = %d", max_label);
+	// printf("\nMin degree = %d", min_deg_node);
 
-    	
-fclose(ad);*/
+	for (i = 0; i < max_label; i ++)
+	{
+		printf("%d: ", adlist[i][0]);
+		// for (j = 0; j < degree[i]; j ++)
+		// 	printf("%d ", adlist[i][j]);
+		printf("\n");
+	}
+
+	flag=(int*)calloc((max_label+2),sizeof(int));
+	while(fscanf(f,"%d %d",&n1,&n2)!=EOF)
+	{
+		printf("\nReading (%d, %d)", n1, n2);
+		adlist[n1][++flag[n1]]=n2;
+    	adlist[n2][++flag[n2]]=n1;
+    	cd++;
+	}
 	//printf("\n\nThe number of edges:%d\n",cd);
-    	free(flag);
+    free(flag);
 	free(degree);
 }
 
@@ -271,68 +258,67 @@ fclose(ad);*/
 
 void community_detection(float t)
 {
-    	int i,j,p,rear=-1,front=-1,top=0;
-    	brok *bro;
+	int i,j,p,rear=-1,front=-1,top=0;
+	brok *bro;
 	link * temp;
-    	int z=0;
-    	bro=(brok *)calloc(max_label+2,sizeof(brok));
-    	int b=0,bLabel;
-    	float reScore;
-    	int maxi,k,no_of_nodes;
+	int z=0;
+	bro=(brok *)calloc(max_label+2,sizeof(brok));
+	int b=0,bLabel;
+	float reScore;
+	int maxi,k,no_of_nodes;
 	int sum=0,intra=0,count=0;
 	count_of_comm=0;
-    	node start,neighbour;
-    	clock_t begin=clock(),end;
-    	while(front<rear || top>=0)
-    	{
+	node start,neighbour;
+	clock_t begin=clock(),end;
+	while(front<rear || top>=0)
+	{
 		if(front<rear)
-        	{
-            		start=Queue[++front];
-                }
-        	else
-        	{
-            		start=Broker[top--];
-            		b++;//Broker node
+    	{
+       		start=Queue[++front];
+        }
+    	else
+    	{
+       		start=Broker[top--];
+       		b++;//Broker node
 			no_of_nodes=0;
 			sum=labels[start.label].deg_sum;
 			intra=labels[start.label].intra_edges;
-			temp=(link*)malloc(sizeof(link));
-       			temp->label=0;
+			temp=(link*)malloc(sizeof(link));	   			temp->label=0;
 			temp->mark=0;
 			temp->test=0;
-        		temp->ptr=NULL;
-        		Overlap[start.label]=temp;
-        	}
+	    	temp->ptr=NULL;
+    		Overlap[start.label]=temp;
+    	}
 
-        	labels[start.label].traversed=1;
-        	if(start.category==1)
+    	labels[start.label].traversed=1;
+    	if(start.category==1)
+    	{
+    		bro[z].label=start.label;
+    		bro[z].parent=start.parent;
+    		z++;
+    	}
+    	for(i=1;i<=adlist[start.label][0];i++)
+    	{
+        	labels[adlist[start.label][i]].influenced=1;
+    	}
+    	for(i=1;i<=adlist[start.label][0];i++)
+    	{
+        	if(labels[adlist[start.label][i]].traversed==0)
         	{
-            		bro[z].label=start.label;
-            		bro[z].parent=start.parent;
-            		z++;
-        	}
-            	for(i=1;i<=adlist[start.label][0];i++)
-            	{
-                	labels[adlist[start.label][i]].influenced=1;
-            	}
-            	for(i=1;i<=adlist[start.label][0];i++)
-            	{
-                	if(labels[adlist[start.label][i]].traversed==0)
-                	{
-                    		neighbour.parent=start.label;
-                    		neighbour.label=adlist[start.label][i];
-                    		neighbour.community=start.label;
-		    		labels[neighbour.label].traversed=1;
-                    		neighbour.score=calculate_score(neighbour.label);
-                    		if(neighbour.score<t)
-                    		{
-                        		neighbour.category=1;//Broker
-                       			labels[neighbour.label].label=neighbour.label;//broker
-                        		labels[neighbour.label].category=1;
-                        		Broker[++top]=neighbour;
-                    		}
-                    		else
-                    		{
+	    		neighbour.parent=start.label;
+	    		neighbour.label=adlist[start.label][i];
+	    		neighbour.community=start.label;
+				labels[neighbour.label].traversed=1;
+	    		neighbour.score=calculate_score(neighbour.label);
+	    		if(neighbour.score<t)
+	    		{
+	        		neighbour.category=1;//Broker
+	       			labels[neighbour.label].label=neighbour.label;//broker
+	        		labels[neighbour.label].category=1;
+	        		Broker[++top]=neighbour;
+	    		}
+                else
+                {
 					if(labels[labels[start.label].label].mark1==0)
 					{
 						labels[labels[start.label].label].mark1=-1;
@@ -347,55 +333,55 @@ void community_detection(float t)
 					}
 					sum+=adlist[adlist[start.label][i]][0];
 					intra+=count;
-                        		labels[neighbour.label].label=labels[start.label].label;
-                        		labels[neighbour.label].category=2;
+                	labels[neighbour.label].label=labels[start.label].label;
+                	labels[neighbour.label].category=2;
 					labels[labels[start.label].label].deg_sum=sum;
 					labels[labels[start.label].label].intra_edges=intra;
-                        		neighbour.category=2;//Community node
+                	neighbour.category=2;//Community node
 					no_of_nodes++;
 					labels[labels[start.label].label].nodes=no_of_nodes;
-                        		Queue[++rear]=neighbour;
+                	Queue[++rear]=neighbour;
 					temp=(link*)malloc(sizeof(link));
-       					temp->label=count_of_comm;
+       				temp->label=count_of_comm;
 					temp->mark=0;
 					temp->test=0;
-        				temp->ptr=NULL;
-        				Overlap[neighbour.label]=temp;
-                    		}
-                	}
+        			temp->ptr=NULL;
+        			Overlap[neighbour.label]=temp;
+                }
+           	}
 		}
 	}
 	free(Queue);
-    	free(Broker);
+    free(Broker);
     	//printf("\nThe number of brokers are: %d",z);
     	
 	printf("\n\nNo. of COMMUNITIES detected before mod max : %d\n",count_of_comm);
  
-    	end=clock();
+    end=clock();
 	//printf("\n\nTime taken = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 
-    	profile=(community1 *)calloc(count_of_comm+1,sizeof(community1));
+    profile=(community1 *)calloc(count_of_comm+1,sizeof(community1));
 	float dc;
 	
 	for(i=1;i<=max_label;i++)
+	{
+		if(labels[i].category==1)
 		{
-			if(labels[i].category==1)
+			if(labels[i].nodes>0)
 			{
-				if(labels[i].nodes>0)
-				{
-					profile[Overlap[i]->mark].count=labels[i].nodes;
-					profile[Overlap[i]->mark].iedges=labels[i].intra_edges;
-					profile[Overlap[i]->mark].deg=labels[i].deg_sum;
-					dc=labels[i].deg_sum*labels[i].deg_sum;
-					dc=dc/(float)cd;	
-					dc=dc/(float)cd;
-					dc=dc/(float)(4);
-					profile[Overlap[i]->mark].m=(labels[i].intra_edges/(float)cd)-dc;
-				}
+				profile[Overlap[i]->mark].count=labels[i].nodes;
+				profile[Overlap[i]->mark].iedges=labels[i].intra_edges;
+				profile[Overlap[i]->mark].deg=labels[i].deg_sum;
+				dc=labels[i].deg_sum*labels[i].deg_sum;
+				dc=dc/(float)cd;	
+				dc=dc/(float)cd;
+				dc=dc/(float)(4);
+				profile[Overlap[i]->mark].m=(labels[i].intra_edges/(float)cd)-dc;
 			}
+		}
 	}
 	
-    	free(bro);
+    free(bro);
 }
 /*Calculates score*/
 
@@ -420,9 +406,9 @@ void convergence()
 {
 	clock_t begin,end;
 	begin=clock();
-    	int iter=5,i,j,no_of_comm,l;
-    	link *temp;
-    	char str[50];
+   	int iter=5,i,j,no_of_comm,l;
+   	link *temp;
+   	char str[50];
 	end=clock();
 /* Placing marked nodes in communities to which maximum neighbours belong */
 	int check_loop=1,vertex=0;
@@ -452,58 +438,56 @@ void maxCMT(int n)
 	float dc1;
 	int comm,flag_val=0,maxlabel;
 	float mod=0.0,new_mod=0.0,max_m=0.0;
-    	link *temp,*temp1,*temp2;
-    	int *flag=(int *)calloc(count_of_comm+1,sizeof(int));
+   	link *temp,*temp1,*temp2;
+   	int *flag=(int *)calloc(count_of_comm+1,sizeof(int));
 	int *flag1=(int *)calloc(count_of_comm+1,sizeof(int));
-    	for(i=1;i<=adlist[n][0];i++)
-    	{
+	for(i=1;i<=adlist[n][0];i++)
+	{
 		if(labels[adlist[n][i]].category!=1)
 		{
-  	    	temp=Overlap[adlist[n][i]];
-        	while(temp!=NULL)
-        	{
-
-            		flag[temp->label]++;
-			flag1[temp->label]++;
-            		temp=temp->ptr;
-        	}
-        	//free(temp);
-		}
-    	}
-
-    	for(i=1;i<=adlist[n][0];i++)
-    	{
-		if(labels[adlist[n][i]].category!=1)
-		{
-		temp=Overlap[adlist[n][i]];
-		while(temp!=NULL)
-		{
-			if(flag[temp->label]!=-1)
+			temp=Overlap[adlist[n][i]];
+			while(temp!=NULL)
 			{
-				dc1=profile[temp->label].deg+adlist[n][0];
-				dc1=dc1*dc1;
-				dc1=dc1/(float)cd;	
-				dc1=dc1/(float)cd;
-				dc1=dc1/(float)(4);
-				new_mod=((profile[temp->label].iedges+flag[temp->label])/(float)cd)-dc1;
-				new_mod=new_mod-profile[temp->label].m;
-				if(new_mod>mod_change)
-				{
-					mod_change=new_mod;
-					comm=temp->label;
-					flag_val=1;
-				}
-				if((flag[temp->label])>max)
-				{
-					max=flag[temp->label];
-					maxlabel=temp->label;
-					max_m=new_mod;
-					
-				}
-				flag[temp->label]=-1;
+					flag[temp->label]++;
+				flag1[temp->label]++;
+					temp=temp->ptr;
 			}
-			temp=temp->ptr;
+			//free(temp);
 		}
+    }
+
+    for(i=1;i<=adlist[n][0];i++)
+    {
+		if(labels[adlist[n][i]].category!=1)
+		{
+			temp=Overlap[adlist[n][i]];
+			while(temp!=NULL)
+			{
+				if(flag[temp->label]!=-1)
+				{
+					dc1=profile[temp->label].deg+adlist[n][0];
+					dc1=dc1*dc1;
+					dc1=dc1/(float)cd;	
+					dc1=dc1/(float)cd;
+					dc1=dc1/(float)(4);
+					new_mod=((profile[temp->label].iedges+flag[temp->label])/(float)cd)-dc1;
+					new_mod=new_mod-profile[temp->label].m;
+					if(new_mod>mod_change)
+					{
+						mod_change=new_mod;
+						comm=temp->label;
+						flag_val=1;
+					}
+					if((flag[temp->label])>max)
+					{
+						max=flag[temp->label];
+						maxlabel=temp->label;
+						max_m=new_mod;						
+					}
+					flag[temp->label]=-1;
+				}
+				temp=temp->ptr;
+			}
 		//free(temp);
 		}
 	}
@@ -533,29 +517,29 @@ void maxCMT(int n)
 /*Prints the communities*/
 int print()
 {
-    	int i,j,l,no_of_comm=0,k,count;
-    	link *temp,*temp1,*temp2;
+    int i,j,l,no_of_comm=0,k,count;
+    link *temp,*temp1,*temp2;
 	int cVal=1,index=0;
 	FILE *fp;
 	list1=(int *)calloc(count_of_comm+2,sizeof(int));
 	int *arr=(int *)calloc(count_of_comm+2,sizeof(int));
-char mapping[50] = "Mapping";
-char membership[50] = "Membership_";
-strcat(mapping,filename);
-strcat(membership,filename);
+	char mapping[50] = "Mapping";
+	char membership[50] = "Membership_";
+	strcat(mapping,filename);
+	strcat(membership,filename);
 	FILE *fp123=fopen(mapping,"w+");
 	fp=fopen(membership,"w+");
   	for(i=1;i<=max_label;i++)
-    	{
+   	{
 		fprintf(fp,"%d",i);
-        	temp=Overlap[i];
+       	temp=Overlap[i];
 		if(temp->test!=0)
 			index=temp->test;
-        	while(temp!=NULL)
+       	while(temp!=NULL)
 		{
 			if(arr[temp->label]==0)
 			{
-            			arr[temp->label]=cVal;
+      			arr[temp->label]=cVal;
 				fprintf(fp123,"%d  %d  \n",temp->label,cVal);
 				fprintf(fp," %d",arr[temp->label]);
 	  			temp->label=cVal;
@@ -563,21 +547,21 @@ strcat(membership,filename);
 				cVal++;
 			}
 			else
-            		{
+       		{
 				fprintf(fp," %d",arr[temp->label]);
-                		temp->label=arr[temp->label];
+           		temp->label=arr[temp->label];
 				list1[temp->label]++;
-            		}
-        		temp=temp->ptr;
+       		}
+       		temp=temp->ptr;
 		}
 		fprintf(fp," %d\n", -1);
-        }
+    }
 	
 	fclose(fp);
 	//char filename3[50],c1,c2;
 	free(arr);
-int *arr1=(int *)calloc(count_of_comm+2,sizeof(int));
-char filename3[50]="",c1,c2;
+	int *arr1=(int *)calloc(count_of_comm+2,sizeof(int));
+	char filename3[50]="",c1,c2;
 	//printf("Do you wish to generate intermediate cover? Y/N\n");
 	//c2=getchar();
 	//scanf("%c",&c1);
@@ -590,29 +574,29 @@ char filename3[50]="",c1,c2;
 		strcat(filename3,"_cover_i.txt");
 		fp=fopen(filename3,"w+");
 		fprintf(fp,"%d\n",count_of_comm);
-        	for(i=1;i<=max_label;i++)
-    		{
-        		temp2=Overlap[i];
+    	for(i=1;i<=max_label;i++)
+		{
+    		temp2=Overlap[i];
 			while(temp2!=NULL)
 			{
-        			while(arr1[temp2->label]!=-1)
+    			while(arr1[temp2->label]!=-1)
 				{
 					arr1[temp2->label]=-1;
-        	    			for(j=i;j<=max_label;j++)
-        	    			{
-        	        			temp1=Overlap[j];
-        	        			while(temp1!=NULL)
-        	        			{
-        	            				if(temp2->label==temp1->label)
-        	            				{
-        	                				fprintf(fp,"%d ",j);
-        	            				}
-        	            				temp1=temp1->ptr;
-        	       				}
-        	   			}
-				fprintf(fp,"-1\n");
+    	    		for(j=i;j<=max_label;j++)
+    	    		{
+   	        			temp1=Overlap[j];
+   	        			while(temp1!=NULL)
+	        			{
+            				if(temp2->label==temp1->label)
+            				{
+                				fprintf(fp,"%d ",j);
+            				}
+            				temp1=temp1->ptr;
+	       				}
+       	   			}
+					fprintf(fp,"-1\n");
 				}
-        	   		temp2=temp2->ptr;
+       	   		temp2=temp2->ptr;
 			}
 		}
 		fclose(fp);
@@ -620,7 +604,7 @@ char filename3[50]="",c1,c2;
 
 	free(arr1);
 	//free(arr1);
-    	return (cVal-1);
+    return (cVal-1);
 }
 
 void generateNodes()
@@ -629,45 +613,45 @@ void generateNodes()
 	int i,j,k,ct;
 	int total=0;
 	FILE *fpl,*fpl1;
-char name[50] ="louvain_input_";
-strcat(name,filename);
+	char name[50] ="louvain_input_";
+	strcat(name,filename);
 	fpl=fopen(name,"w+");
 	int index,index1;
-        arrayL=(int**)calloc(no_of_comm1+2,sizeof(int*));
-        for(i=1;i<=no_of_comm1+1;i++)
-        {
-            arrayL[i]=(int*)calloc((i+2),sizeof(int));
-        }
-        for(i=1;i<=max_label;i++)
-      	{
+    arrayL=(int**)calloc(no_of_comm1+2,sizeof(int*));
+    for(i=1;i<=no_of_comm1+1;i++)
+    {
+        arrayL[i]=(int*)calloc((i+2),sizeof(int));
+    }
+    for(i=1;i<=max_label;i++)
+  	{
 		Overlap[i]->mark=-999;
-                for(j=1;j<=adlist[i][0];j++)
-               	{
+        for(j=1;j<=adlist[i][0];j++)
+      	{
 			if(Overlap[adlist[i][j]]->mark!=-999)
 			{
-                          	temp=Overlap[i];
+               	temp=Overlap[i];
 				temp1=Overlap[adlist[i][j]];
 				while(temp!=NULL)
 				{
 					while(temp1!=NULL)
-                             		{
+               		{
 						if(temp->label!=temp1->label)
 						{
-                                      			//if((temp->label)>(temp1->label) && arrayL[temp->label][temp1->label]==0)
+                   			//if((temp->label)>(temp1->label) && arrayL[temp->label][temp1->label]==0)
 							if((temp->label)>(temp1->label))
-                                      			{
+                   			{
 								if(arrayL[temp->label][temp1->label]==0)
 									fprintf(fpl,"%d %d\n",temp->label,temp1->label);
-                                          			arrayL[temp->label][temp1->label]++;
-                                       			}
+                       			arrayL[temp->label][temp1->label]++;
+                   			}
                                         		//else if((temp->label) < (temp1->label) && arrayL[temp1->label][temp->label]==0)
 							else if((temp->label) < (temp1->label))
-                                          		{
+                      		{
 								if(arrayL[temp1->label][temp->label]==0)
 									fprintf(fpl,"%d %d\n",temp->label,temp1->label);
-                                       	       			arrayL[temp1->label][temp->label]++;
-                                       	 		}
-                                		}
+               	       			arrayL[temp1->label][temp->label]++;
+                   	 		}
+                   		}
 						temp1=temp1->ptr;	
 					}
 					temp=temp->ptr;
@@ -676,25 +660,9 @@ strcat(name,filename);
 		}
 	}
 				
-      	printf("\n\n");
-      	
-	/*fpl1=fopen("NewEdge.txt","w+");
-	for(i=1;i<=no_of_comm1;i++)
-	{
-		for(j=i;j<=no_of_comm1;j++)
-
-		{
-			if((arrayL[j][i]!=0))
-			{
-				//fprintf(fpl,"%d %d\n",i,j);
-				fprintf(fpl1,"%d %d %f\n",i,j,(float)arrayL[j][i]/(list1[i]*list1[j]));
-				total++;
-			}
-		}
-	}*/
+    printf("\n\n");
+ 	
 	fclose(fpl);
-	//fclose(fpl1);
-	//printf("total No. of edges : %d\n",total);
 
 	for(i=0;i<=no_of_comm1+1;i++)
 		free(arrayL[i]);

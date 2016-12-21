@@ -1,7 +1,5 @@
 
  /*The program assumes that the node label starts from 1 and the graph has no missing nodes.*/ 
-
-
 #include <stdlib.h> 
 #include <stdio.h> 
 #include <time.h> 

@@ -118,7 +118,7 @@ int main( int argc, char **argv)
 	//printf("\n\nTime taken to calculate degrees of nodes = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	fclose(fp);
 	labels=(record *)calloc(max_label+2,sizeof(record));
-        fp=fopen(filename,"r");
+    fp=fopen(filename,"r");
 	begin=clock();
 	adjacencyList(fp);
 	end=clock();
@@ -128,7 +128,7 @@ int main( int argc, char **argv)
 	//printf("Min degree node is %d\n",min_deg_node);
 //threshold value
 	//t=0.66;
-t = atof(argv[2]);
+	t = atof(argv[2]);
 	Queue=(node *)calloc(max_label+2,sizeof(node));
 	Broker=(node *)calloc(max_label+2,sizeof(node));
     Overlap=(link**)calloc(max_label+2,sizeof(link*));
@@ -151,7 +151,7 @@ t = atof(argv[2]);
 	free(labels);
     	//printf("\n\nTime taken for convergence = %f\n",(float)(end-begin)/CLOCKS_PER_SEC);
 	begin=clock();
-    	no_of_comm1=print();
+    no_of_comm1=print();
 	//printf("\ncommunities after print : %d\n",no_of_comm1);
 	end=clock();
 	generateNodes();
@@ -301,6 +301,7 @@ void community_detection(float t)
     	{
         	labels[adlist[start.label][i]].influenced=1;
     	}
+    
     	for(i=1;i<=adlist[start.label][0];i++)
     	{
         	if(labels[adlist[start.label][i]].traversed==0)
